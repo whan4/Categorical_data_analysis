@@ -1,0 +1,120 @@
+---
+title: "hypothesis_test"
+output: html_document
+date: "2023-08-30"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#1. A random sample of 12 subjects was taken from a target population to study the prevalence of a disease p. It turned out that 3 of them were diseased. 
+##(a) Estimate the disease prevalence p.
+
+```{r 1. (a)}
+sample_size <- 12
+diseased_count <- 3
+estimated_p <- diseased_count / sample_size
+estimated_p
+```
+
+##(b) Use asymptotic procedures to test H0 : p = 0.6 vs. Ha : p \> 0.6. (1)
+
+```{r 1. (b)}
+null_p <- 0.6
+z_stat <- (estimated_p - null_p) / sqrt(null_p * (1 - null_p) / sample_size)
+p_value <- 1 - pnorm(z_stat)
+p_value
+if (p_value <= 0.05) {
+  cat("Reject the null hypothesis.\n")
+} else {
+  cat("Accept the null hypothesis.\n")
+}
+```
+
+##(c) Change Ha : p \> 0.6 in (1) to Ha : p \< 0.6 and repeat b).
+
+```{r 1. (c)}
+null_p <- 0.6
+z_stat_alt <- (estimated_p - null_p) / sqrt(null_p * (1 - null_p) / sample_size)
+p_value_alt <- pnorm(z_stat_alt)
+p_value_alt
+if (p_value_alt <= 0.05) {
+  cat("Reject the null hypothesis.\n")
+} else {
+  cat("Accept the null hypothesis.\n")
+}
+```
+
+##(d) Change Ha : p \> 0.6 in (1) to Ha : p 6= 0.6 and repeat b).
+
+```{r}
+two_sided_p_value <- 2 * pmin(p_value, 1 - p_value)
+two_sided_p_value
+if (two_sided_p_value <= 0.025) {
+  cat("Reject the null hypothesis.\n")
+} else {
+  cat("Accept the null hypothesis.\n")
+}
+```
+#2. Since the sample size in Problem 1 is not very large, it is better to use exact tests.
+##(a) Apply exact tests to test the hypothesis in (1) for the data in Problem 1, andcompare your results with those derived from asymptotic tests.
+```{r}
+x <- 3  
+n <- 12  
+p0 <- 0.6 
+binom_test_result <- binom.test(x, n, p = p0, alternative = "greater")
+p_value_binom_greater <- binom_test_result$p.value
+p_value_binom_greater
+if (p_value_binom_greater <= 0.05) {
+  cat("Reject the null hypothesis.\n")
+} else {
+  cat("Accept the null hypothesis.\n")
+}
+```
+##(b) Change Ha : p > 0.6 in (1) to Ha : p < 0.6 and repeat a).
+```{r}
+x <- 3  
+n <- 12  
+p0 <- 0.6 
+binom_test_result <- binom.test(x, n, p = p0, alternative = "less")
+p_value_binom_less <- binom_test_result$p.value
+p_value_binom_less
+if (p_value_binom_less <= 0.025) {
+  cat("Reject the null hypothesis.\n")
+} else {
+  cat("Accept the null hypothesis.\n")
+}
+```
+##(c) Change Ha : p > 0.6 in (1) to Ha : p 6= 0.6 and repeat a).
+```{r}
+x <- 3  
+n <- 12  
+p0 <- 0.6 
+binom_test_result <- binom.test(x, n, p = p0, alternative = "two.sided")
+p_value_binom_twoside <- binom_test_result$p.value
+p_value_binom_twoside
+if (p_value_binom_twoside <= 0.025) {
+  cat("Reject the null hypothesis.\n")
+} else {
+  cat("Accept the null hypothesis.\n")
+}
+```
+#In the DOS study, we are interested in testing the following hypothesis concerning the distribution of depression diagnosis for the entire sample:
+Pr(No depression) = 0.65
+Pr(Minor depression) = 0.3
+Pr(Major depression) = 0.05
+##(a) Use the chi-square test to test the hypothesis.
+```{r}
+expected <- c(0.65, 0.3, 0.05)
+observed <- c(481, 136, 128)
+result_chisq <- chisq.test(observed, p = expected)
+print(result_chisq)
+```
+
+##(b) Use the exact test to test the hypothesis.
+```{r}
+result_exact_chisq <- multinomial.test(observed, p = expected, simulate.p.value = TRUE)
+print(result_exact_chisq)
+```
+

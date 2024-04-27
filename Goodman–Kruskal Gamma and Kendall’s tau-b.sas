@@ -1,0 +1,12 @@
+data hw41;
+set hw4.hw3;
+if cp48=1 then cp4848=1;
+else if cp48>1 then cp4848=2;
+else if cp48=0 then cp4848=0;
+if cp10=1 then cp1010 = 1;
+else if cp10>1 then cp1010 = 2;
+else if cp9="No" then cp1010 = 0;
+run;
+proc freq data=hw41;
+tables cp1010*cp4848;
+run;

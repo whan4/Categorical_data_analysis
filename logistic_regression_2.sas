@@ -1,0 +1,15 @@
+PROC FREQ DATA=hw5;
+  TABLES CIRS3*Depd / CHISQ trend;
+  EXACT CHISQ;
+  run;
+proc logistic data=hw5 descending;
+	class CIRS3 (ref = "3")/ param = ref;
+    model Depd = CIRS3 / link=logit aggregate scale =deviance;
+run;
+proc logistic data=hw5 descending;
+	class CIRS3 (ref = "3")/ param = glm;
+    model Depd = CIRS3 / noint link=logit;
+run;
+PROC LOGISTIC DATA=hw5 DESCENDING;
+  MODEL Depd = CIRS3;
+RUN;
